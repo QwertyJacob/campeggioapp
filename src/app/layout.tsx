@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Campeggio Estivo 2026 — Registrazione",
-  description: "Modulo di registrazione per i professori e collaboratori del Campeggio Estivo 2026",
+  title: "Campeggio Estivo Gioventù Idente 2026",
+  description: "Modulo di registrazione di professori e aiutoprofessori",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
