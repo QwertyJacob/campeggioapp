@@ -29,7 +29,7 @@ export default function AccediPage() {
       });
 
       if (authError) {
-        setError("Nome utente o password errati.");
+        setError(`Errore: ${authError.message}`);
         return;
       }
 
