@@ -1,18 +1,24 @@
 import { redirect } from "next/navigation";
-import { createServerSupabaseClient } from "@/lib/supabase-server";
+import { cookies } from "next/headers";
 import { supabaseAdmin } from "@/lib/supabase-admin";
+import { AUTH_COOKIE } from "@/lib/constants";
 import AdminView, { type Registrazione } from "./AdminView";
 import LogoutButton from "./LogoutButton";
 
 export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
-  const supabase = await createServerSupabaseClient();
+  const store = await cookies();
+  const token = store.get(AUTH_COOKIE)?.value;
+
+  if (!token) redirect("/accedi");
+
   const {
     data: { user },
-  } = await supabase.auth.getUser();
+    error,
+  } = await supabaseAdmin.auth.getUser(token);
 
-  if (!user) redirect("/accedi");
+  if (error || !user) redirect("/accedi");
 
   const isAdmin = user.user_metadata?.is_admin === true;
 
@@ -22,11 +28,12 @@ export default async function DashboardPage() {
       .select("*")
       .order("created_at", { ascending: true });
 
-    return <AdminView registrazioni={(registrazioni as Registrazione[]) ?? []} />;
+    return (
+      <AdminView registrazioni={(registrazioni as Registrazione[]) ?? []} />
+    );
   }
 
-  // Regular user — fetch their own registration
-  const { data: reg } = await supabase
+  const { data: reg } = await supabaseAdmin
     .from("registrazioni")
     .select("stato, nome")
     .eq("user_id", user.id)

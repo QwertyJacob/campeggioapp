@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { DATE_DISPONIBILI, AREE, RUOLI, EMAIL_DOMAIN } from "@/lib/constants";
+import { setAuthCookie } from "@/app/actions";
 
 type FormState = {
   nome: string;
@@ -127,6 +128,9 @@ export default function RegistratiPage() {
         return;
       }
 
+      if (authData.session) {
+        await setAuthCookie(authData.session.access_token);
+      }
       router.push("/dashboard");
     } catch {
       setError("Errore imprevisto. Riprova più tardi.");

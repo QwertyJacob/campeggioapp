@@ -29,3 +29,5 @@ export const RUOLI = [
 ]
 
 export const EMAIL_DOMAIN = "@campeggio.interno"
+
+export const AUTH_COOKIE = "sb-auth-token"

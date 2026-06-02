@@ -2,12 +2,14 @@
 
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import { clearAuthCookie } from "@/app/actions";
 
 export default function LogoutButton({ className }: { className?: string }) {
   const router = useRouter();
 
   async function handleLogout() {
     await supabase.auth.signOut();
+    await clearAuthCookie();
     router.push("/");
     router.refresh();
   }

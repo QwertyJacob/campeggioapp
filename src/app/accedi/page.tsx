@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { EMAIL_DOMAIN } from "@/lib/constants";
+import { setAuthCookie } from "@/app/actions";
 
 export default function AccediPage() {
   const router = useRouter();
@@ -23,7 +24,7 @@ export default function AccediPage() {
     setLoading(true);
 
     try {
-      const { error: authError } = await supabase.auth.signInWithPassword({
+      const { data, error: authError } = await supabase.auth.signInWithPassword({
         email: `${username.trim().toLowerCase()}${EMAIL_DOMAIN}`,
         password,
       });
@@ -33,6 +34,9 @@ export default function AccediPage() {
         return;
       }
 
+      if (data.session) {
+        await setAuthCookie(data.session.access_token);
+      }
       router.push("/dashboard");
       router.refresh();
     } catch {
